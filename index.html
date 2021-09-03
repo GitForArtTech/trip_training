@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./index.css" />
+    <!-- font awesome CDN -->
+    <link
+      rel="stylesheet"
+      href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+      integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
+      crossorigin="anonymous"
+    />
+    <!-- <script src="./index.js"></script> -->
+    <title>Trip</title>
+  </head>
+  <body>
+    <div class="banner">
+      <h2>高雄旅遊資訊</h2>
+      <select name="selectAdd" id="selectAdd" onchange="addrChange(this);">
+        <option value="" selected disabled hidden>-- 請選擇一個行政區-</option>
+      </select>
+      <h4>熱門行政區</h4>
+      <div class="btn">
+        <div class="hotBtn b1" onclick="addrChange(14);">苓雅區</div>
+        <div class="hotBtn b2" onclick="addrChange(17);">三民區</div>
+        <div class="hotBtn b3" onclick="addrChange(30);">新興區</div>
+        <div class="hotBtn b4" onclick="addrChange(0);">鹽埕區</div>
+      </div>
+      <br /><br />
+      <p class="divider">
+        ------------ <i class="fas fa-chevron-circle-down"></i> ------------
+      </p>
+    </div>
+    <div class="main">
+      <!-- 放下拉式選單選擇地區 -->
+      <div id="mainText"></div>
+      <!-- 顯示地區 -->
+      <div id="addrBox"></div>
+    </div>
+    <div class="footer">
+      <!-- 分頁 -->
+      <nav id="pageNav">
+        <ul id="pagination"></ul>
+      </nav>
+    </div>
+  </body>
+</html>
+<!-- 放在最後，防止html select option 初始node找不到，讓dropdownlist是空的 -->
+<script src="./index.js"></script>
