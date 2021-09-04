@@ -4,6 +4,7 @@ const selectAdd = document.getElementById("selectAdd");
 const selectedText = document.getElementById("mainText");
 //熱門地區button
 //When using getElementsByClassName, you will get array of elements instead of single array unlike getElementById.
+const hotBtn = document.getElementsByClassName("btn")[0];
 const hotBtn1 = document.getElementsByClassName("b1")[0];
 const hotBtn2 = document.getElementsByClassName("b2")[0];
 const hotBtn3 = document.getElementsByClassName("b3")[0];
@@ -67,12 +68,6 @@ request.send(null);
 function addrChange(selectedAddr) {
   //selectedText非空（已經選擇過地區）
   if (selectedText.innerText != " ") {
-    //檢查user是否選擇了相同的地區，防止一直問相同資料
-    // if (selectedText.innerText === addrArray[selectedAddr]) {
-    //   // alert(hotBtn1.innerText);
-    //   hotBtn1.style.cssText = "pointer-events: none;opacity: 0.4;";
-    // } else {
-    //清空原本filterAddr的內容
     filterAddr = [];
     //一轉換地區，就清空原本div內的Box
     addrBox.innerHTML = "";
@@ -95,7 +90,9 @@ function addrChange(selectedAddr) {
         filterAddr.push(element);
       }
     });
-    // //新增已過濾完成的地區名Box (前6筆資料)
+    //新增已過濾完成的地區名Box (前6筆資料) 有某些地區的筆數少於6筆
+    if (filterAddr < perPage) {
+    }
     for (let i = 0; i < perPage; i++) {
       //createElement 如果放在最外面，就會只有一個div可以用，所以要放在裡面
       let createBox = document.createElement("div"); //包含照片跟資訊
@@ -121,12 +118,37 @@ function addrChange(selectedAddr) {
       createBox.appendChild(boxText);
       addrBox.appendChild(createBox);
     }
+
+    // let btnStyle = "pointer-events: none;opacity: 0.4;";
+    // if (selectedText.innerText === addrArray[selectedAddr]) {
+    //   switch (addrArray[selectedAddr]) {
+    //     case hotBtn1.innerText:
+    //       console.log(hotBtn1.innerText);
+    //       hotBtn1.style.cssText = btnStyle;
+    //       break;
+    //     case hotBtn2.innerText:
+    //       console.log(hotBtn2.innerText);
+    //       hotBtn2.style.cssText = btnStyle;
+    //       break;
+    //     case hotBtn3.innerText:
+    //       console.log(hotBtn3.innerText);
+    //       hotBtn3.style.cssText = btnStyle;
+    //       break;
+    //     case hotBtn4.innerText:
+    //       console.log(hotBtn4.innerText);
+    //       hotBtn4.style.cssText = btnStyle;
+    //       break;
+    //     default:
+    //       break;
+    //   }
+    // } else {
+    //   hotBtn1.style.cssText = " ";
+    //   hotBtn2.style.cssText = " ";
+    //   hotBtn3.style.cssText = " ";
+    //   hotBtn4.style.cssText = " ";
+    // }
     //處理分頁
     getTotalPage(filterAddr);
-    if (selectedText.innerText === addrArray[selectedAddr]) {
-      // alert(hotBtn1.innerText);
-      hotBtn1.style.cssText = "pointer-events: none;opacity: 0.4;";
-    }
     // }
   }
 }
@@ -138,7 +160,42 @@ pagination.addEventListener("click", (e) => {
     getPageData(e.target.dataset.page, filterAddr);
   }
 });
-
+//監聽熱門地區Btn 點擊事件
+hotBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  let value = e.target.dataset.value;
+  let num = e.target.dataset.num;
+  console.log(num);
+  for (let i = 0; i < addrArray.length; i++) {
+    if (addrArray[i] === value) {
+      //找到被點擊按鈕在addrArray的index
+      addrChange(i);
+    }
+  }
+  let btnStyle = "pointer-events: none;opacity: 0.4;";
+  if (selectedText.innerText === value) {
+    switch (value) {
+      case hotBtn1.innerText:
+        console.log(hotBtn1.innerText);
+        hotBtn1.style.cssText = btnStyle;
+        break;
+      case hotBtn2.innerText:
+        console.log(hotBtn2.innerText);
+        hotBtn2.style.cssText = btnStyle;
+        break;
+      case hotBtn3.innerText:
+        console.log(hotBtn3.innerText);
+        hotBtn3.style.cssText = btnStyle;
+        break;
+      case hotBtn4.innerText:
+        console.log(hotBtn4.innerText);
+        hotBtn4.style.cssText = btnStyle;
+        break;
+      default:
+        break;
+    }
+  }
+});
 // 篩選分頁資料
 function getPageData(choosePage, allData) {
   //先清空頁面資料

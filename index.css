@@ -9,15 +9,23 @@
 body {
   font-family: "jf";
 }
-.banner {
+.header {
   width: 100%;
+  height: 30vh;
   display: inline-block;
+  background-image: url("https://hexschool.github.io/JavaScript_HomeWork/assets/Hero.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
   text-align: center;
   padding: 10px;
 }
 h2,
 #selectAdd {
   margin: 20px;
+}
+h2 {
+  color: aliceblue;
 }
 #selectAdd {
   width: 50vw;
@@ -26,6 +34,26 @@ h2,
   font-size: 16px;
   font-weight: 800;
 }
+.hotArea {
+  position: relative;
+  width: 40vw;
+  height: 112px;
+  margin: 0 auto;
+  top: -5vh;
+  padding: 20px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+}
+
+.hotArea .btn {
+  position: relative;
+  padding: 20px;
+  display: flex;
+  width: 90%;
+  justify-content: space-between;
+  align-items: center;
+}
 
 #mainText {
   width: 100%;
@@ -33,10 +61,7 @@ h2,
   font-size: 20px;
   padding-left: 10px;
 }
-.btn {
-  position: relative;
-  padding: 20px;
-}
+
 .hotBtn {
   display: inline-block;
   width: 100px;
@@ -68,8 +93,44 @@ h2,
     -0.5px -0.5px 0px rgba(255, 255, 255, 1),
     0.5px 0.5px 0px rgba(0, 0, 0, 0.05), 0px 12px 10px -10px rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(0, 0, 0, 0.01);
-  transition: 0.1s;
-  transform: translateY(10px);
+  transition: 0.5s;
+  transform: translateY(5px);
+}
+.divider {
+  width: 24px;
+  height: 24px;
+  background-repeat: no-repeat;
+  margin: 0 auto;
+  margin-top: 10px;
+  border: 2px solid #559ac8;
+  border-radius: 50%;
+}
+.divider img {
+  position: relative;
+  top: 5px;
+  right: -4px;
+  width: 15px;
+  height: 15px;
+}
+.divider::before {
+  content: "";
+  display: block;
+  position: relative;
+  top: 15px;
+  right: 500px;
+  border-top: 1px dashed #559ac8;
+  width: 500px;
+  height: 1px;
+}
+.divider::after {
+  content: "";
+  display: block;
+  position: relative;
+  top: -15px;
+  left: 25px;
+  border-top: 1px dashed #559ac8;
+  width: 500px;
+  height: 1px;
 }
 #addrBox {
   display: grid;
@@ -92,8 +153,49 @@ a {
   text-decoration: none;
   margin: 10px;
 }
-
-@media screen and (max-width: 700px) {
+@media (max-width: 1000px) {
+  .hotArea {
+    position: relative;
+    width: 40vw;
+    height: 30vh;
+    margin: 0 auto;
+    top: -5vh;
+    padding: 20px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    text-align: center;
+  }
+  .hotArea .btn {
+    display: inline-block;
+    width: 50%;
+    height: 70%;
+  }
+  .hotArea .btn .hotBtn {
+    margin: 5px;
+  }
+}
+@media (max-width: 700px) {
+  .hotArea {
+    position: relative;
+    width: 20vw;
+    height: 30vh;
+    margin: 0 auto;
+    top: -5vh;
+    padding: 20px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    text-align: center;
+  }
+  .hotArea .btn {
+    display: block;
+    width: 20%;
+    height: 70%;
+  }
+  .hotArea .btn .hotBtn {
+    margin: 5px;
+  }
   #addrBox {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
