@@ -38,7 +38,6 @@ if (window.XMLHttpRequest) {
 }
 
 request.onreadystatechange = function () {
-  // let info = data.data.XML_Head.Infos.Info;
   if (this.readyState == 4 && this.status == 200) {
     let data = JSON.parse(this.responseText);
     let info = data.data.XML_Head.Infos.Info; // 只需要Info的資料
@@ -83,7 +82,25 @@ request.send(null);
 
 function addrChange(selectedAddr) {
   //selectedText非空（已經選擇過地區）
+  let selected = selectedAddr.innerText;
   if (selectedText.innerText != " ") {
+    if (
+      selected != hotBtn1.innerText ||
+      selected != hotBtn2.innerText ||
+      selected != hotBtn3.innerText ||
+      selected != hotBtn4.innerText
+    ) {
+      //其他的按鈕要是disabled = false
+      //先把所有熱門地區Bt0n還原
+      hotBtn1.style.cssText = "";
+      hotBtn1.disabled = false;
+      hotBtn2.style.cssText = "";
+      hotBtn2.disabled = false;
+      hotBtn3.style.cssText = "";
+      hotBtn3.disabled = false;
+      hotBtn4.style.cssText = "";
+      hotBtn4.disabled = false;
+    }
     filterAddr = [];
     //一轉換地區，就清空原本div內的Box
     addrBox.innerHTML = "";
@@ -161,16 +178,6 @@ hotBtn.addEventListener("click", function (e) {
   let btnStyle = "pointer-events: none ;opacity: 0.4;";
   //若熱門地區Btn不是disabled，就列出地區資料，並把該按鈕設定為disabled，不讓使用者重複按
   if (e.target.tagName === "BUTTON") {
-    //其他的按鈕要是disabled = false
-    //先把所有熱門地區Bt0n還原
-    hotBtn1.style.cssText = "";
-    hotBtn1.disabled = false;
-    hotBtn2.style.cssText = "";
-    hotBtn2.disabled = false;
-    hotBtn3.style.cssText = "";
-    hotBtn3.disabled = false;
-    hotBtn4.style.cssText = "";
-    hotBtn4.disabled = false;
     if (e.target.disabled != true) {
       for (let i = 0; i < addrArray.length; i++) {
         if (addrArray[i] === value) {
