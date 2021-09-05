@@ -1,5 +1,7 @@
+//Loader
+const loader = document.getElementById("loader");
+const myDiv = document.getElementById("myDiv");
 // get html document
-// const content = document.getElementsByClassName("content");
 const selectAdd = document.getElementById("selectAdd");
 const selectedText = document.getElementById("mainText");
 //熱門地區button
@@ -24,17 +26,22 @@ let filterAddr = [];
 let selectedAddrText = "";
 
 //send request
-const request = new XMLHttpRequest();
+let request = "";
 const baseURL =
   "https://api.kcg.gov.tw/api/service/get/9c8e1450-e833-499c-8320-29b36b7ace5c";
-//第三個參數true是非同步
-request.open("GET", baseURL, true);
 
-request.onload = function () {
-  let data = JSON.parse(this.response);
-  let info = data.data.XML_Head.Infos.Info; // 只需要Info的資料
+if (window.XMLHttpRequest) {
+  request = new XMLHttpRequest();
+} else {
+  // code for older browsers
+  request = new ActiveXObject("Microsoft.XMLHTTP");
+}
 
-  if (request.status >= 200 && request.status < 400) {
+request.onreadystatechange = function () {
+  // let info = data.data.XML_Head.Infos.Info;
+  if (this.readyState == 4 && this.status == 200) {
+    let data = JSON.parse(this.responseText);
+    let info = data.data.XML_Head.Infos.Info; // 只需要Info的資料
     //整理出不重複的地名
     for (let i = 0; i < info.length; i++) {
       //暫時印出所有地名，想過濾方法
@@ -52,22 +59,37 @@ request.onload = function () {
         addrArray.push(addrName);
       }
     }
-    console.log(addrArray);
     // 將不重複的地名陣列，利用forEach加入option
-    addrArray.forEach((addr, index) => {
+    // addrArray.forEach((addr, index) => {
+    //   let option = document.createElement("option");
+    //   option.value = index;
+    //   option.innerHTML = addr;
+    //   selectAdd.appendChild(option);
+    // });
+    // 將不重複的地名陣列，利用forEach加入option ==> IE相容性
+    for (let index = 0; index < addrArray.length; index++) {
       let option = document.createElement("option");
       option.value = index;
-      option.innerHTML = addr;
+      option.innerHTML = addrArray[index];
       selectAdd.appendChild(option);
-    });
+    }
+    loader.style.display = "none";
+    myDiv.style.display = "block";
   }
 };
-
+//第三個參數true是非同步
+request.open("GET", baseURL, true);
 request.send(null);
 
 function addrChange(selectedAddr) {
   //selectedText非空（已經選擇過地區）
   if (selectedText.innerText != " ") {
+    //檢查user是否選擇了相同的地區，防止一直問相同資料
+    // if (selectedText.innerText === addrArray[selectedAddr]) {
+    //   // alert(hotBtn1.innerText);
+    //   hotBtn1.style.cssText = "pointer-events: none;opacity: 0.4;";
+    // } else {
+    //清空原本filterAddr的內容
     filterAddr = [];
     //一轉換地區，就清空原本div內的Box
     addrBox.innerHTML = "";
@@ -83,77 +105,55 @@ function addrChange(selectedAddr) {
     //改變目前選擇地區 p -> div | getElementsByClassName -> getElementById
     selectedText.innerHTML = selectedAddrText;
     //self 用不到
-    addressArr.filter((element, index, self) => {
+    addressArr.filter(function (element, index, self) {
       //element[2]放的是地名
-      //據說includes IE not support... indexOf
-      if (element[2].includes(selectedAddrText)) {
+      //includes IE not support... 改用indexOf
+      if (element[2].indexOf(selectedAddrText) != -1) {
         filterAddr.push(element);
       }
     });
-    //新增已過濾完成的地區名Box (前6筆資料) 有某些地區的筆數少於6筆
-    if (filterAddr < perPage) {
+    //新增已過濾完成的地區名Box (前6筆資料)
+    //如果原本地區的景點數量不到6筆
+    if (filterAddr.length < perPage) {
+      for (let i = 0; i < filterAddr.length; i++) {
+        createAddressBox(i);
+      }
+    } else {
+      for (let i = 0; i < perPage; i++) {
+        createAddressBox(i);
+      }
     }
-    for (let i = 0; i < perPage; i++) {
-      //createElement 如果放在最外面，就會只有一個div可以用，所以要放在裡面
-      let createBox = document.createElement("div"); //包含照片跟資訊
-      let boxText = document.createElement("div"); //放資訊的div
-      let imgUrl = filterAddr[i][0];
-      let createImg = document.createElement("img");
-      createImg.src = imgUrl;
-      //每一次新增的Box的css
-      let boxContent =
-        "border: 1px solid rgba(0, 0, 0, 0.1);padding: 20px 10px;display: flex;background: rgba(255, 255, 255, 0.432);justify-content: center;align-items: center;flex-direction: column;border-radius: 10px";
-      createBox.style.cssText = boxContent;
-      boxText.innerHTML = `${
-        filterAddr[i][1]
-      }${"<br><br><i class='fas fa-clock'></i>&nbsp;&nbsp;"}${
-        filterAddr[i][3]
-      }${"<br><br><i class='fas fa-map-marker-alt'></i>&nbsp;&nbsp;"}${
-        filterAddr[i][2]
-      }${"<br><br><i class='fas fa-mobile-alt'></i>&nbsp;&nbsp;"}${
-        filterAddr[i][4]
-      }`;
-      // 新增div
-      createBox.appendChild(createImg);
-      createBox.appendChild(boxText);
-      addrBox.appendChild(createBox);
-    }
-
-    // let btnStyle = "pointer-events: none;opacity: 0.4;";
-    // if (selectedText.innerText === addrArray[selectedAddr]) {
-    //   switch (addrArray[selectedAddr]) {
-    //     case hotBtn1.innerText:
-    //       console.log(hotBtn1.innerText);
-    //       hotBtn1.style.cssText = btnStyle;
-    //       break;
-    //     case hotBtn2.innerText:
-    //       console.log(hotBtn2.innerText);
-    //       hotBtn2.style.cssText = btnStyle;
-    //       break;
-    //     case hotBtn3.innerText:
-    //       console.log(hotBtn3.innerText);
-    //       hotBtn3.style.cssText = btnStyle;
-    //       break;
-    //     case hotBtn4.innerText:
-    //       console.log(hotBtn4.innerText);
-    //       hotBtn4.style.cssText = btnStyle;
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // } else {
-    //   hotBtn1.style.cssText = " ";
-    //   hotBtn2.style.cssText = " ";
-    //   hotBtn3.style.cssText = " ";
-    //   hotBtn4.style.cssText = " ";
-    // }
     //處理分頁
     getTotalPage(filterAddr);
-    // }
   }
 }
+//建立景點div
+function createAddressBox(index) {
+  //createElement 如果放在最外面，就會只有一個div可以用，所以要放在裡面
+  let createBox = document.createElement("div"); //包含照片跟資訊
+  let boxText = document.createElement("div"); //放資訊的div
+  let imgUrl = filterAddr[index][0];
+  let createImg = document.createElement("img");
+  createImg.src = imgUrl;
+  //每一次新增的Box的css
+  let boxContent =
+    "border: 1px solid rgba(0, 0, 0, 0.1);padding: 20px 10px;display: flex;background: rgba(255, 255, 255, 0.432);justify-content: center;align-items: center;flex-direction: column;border-radius: 10px";
+  createBox.style.cssText = boxContent;
+  boxText.innerHTML =
+    filterAddr[index][1] +
+    "<br><br><i class='fas fa-clock'></i>&nbsp;&nbsp;" +
+    filterAddr[index][3] +
+    "<br><br><i class='fas fa-map-marker-alt'></i>&nbsp;&nbsp;" +
+    filterAddr[index][2] +
+    "<br><br><i class='fas fa-mobile-alt'></i>&nbsp;&nbsp;" +
+    filterAddr[index][4];
+  // 新增div
+  createBox.appendChild(createImg);
+  createBox.appendChild(boxText);
+  addrBox.appendChild(createBox);
+}
 //分頁-監聽點擊事件
-pagination.addEventListener("click", (e) => {
+pagination.addEventListener("click", function (e) {
   e.preventDefault();
   if (e.target.tagName === "A") {
     //點擊到分頁號碼，篩選出該頁面的資料後，顯示
@@ -161,71 +161,67 @@ pagination.addEventListener("click", (e) => {
   }
 });
 //監聽熱門地區Btn 點擊事件
-hotBtn.addEventListener("click", (e) => {
+hotBtn.addEventListener("click", function (e) {
   e.preventDefault();
   let value = e.target.dataset.value;
-  let num = e.target.dataset.num;
-  console.log(num);
-  for (let i = 0; i < addrArray.length; i++) {
-    if (addrArray[i] === value) {
-      //找到被點擊按鈕在addrArray的index
-      addrChange(i);
-    }
-  }
-  let btnStyle = "pointer-events: none;opacity: 0.4;";
-  if (selectedText.innerText === value) {
-    switch (value) {
-      case hotBtn1.innerText:
-        console.log(hotBtn1.innerText);
-        hotBtn1.style.cssText = btnStyle;
-        break;
-      case hotBtn2.innerText:
-        console.log(hotBtn2.innerText);
-        hotBtn2.style.cssText = btnStyle;
-        break;
-      case hotBtn3.innerText:
-        console.log(hotBtn3.innerText);
-        hotBtn3.style.cssText = btnStyle;
-        break;
-      case hotBtn4.innerText:
-        console.log(hotBtn4.innerText);
-        hotBtn4.style.cssText = btnStyle;
-        break;
-      default:
-        break;
+  let btnStyle = "pointer-events: none ;opacity: 0.4;";
+  //若熱門地區Btn不是disabled，就列出地區資料，並把該按鈕設定為disabled，不讓使用者重複按
+  if (e.target.tagName === "BUTTON") {
+    //其他的按鈕要是disabled = false
+    //先把所有熱門地區Bt0n還原
+    hotBtn1.style.cssText = "";
+    hotBtn1.disabled = false;
+    hotBtn2.style.cssText = "";
+    hotBtn2.disabled = false;
+    hotBtn3.style.cssText = "";
+    hotBtn3.disabled = false;
+    hotBtn4.style.cssText = "";
+    hotBtn4.disabled = false;
+    if (e.target.disabled != true) {
+      for (let i = 0; i < addrArray.length; i++) {
+        if (addrArray[i] === value) {
+          //找到被點擊按鈕在addrArray的index
+          addrChange(i);
+        }
+      }
+      e.target.disabled = true;
+      e.target.style.cssText = btnStyle;
     }
   }
 });
-// 篩選分頁資料
+
+// 篩選分頁資料
 function getPageData(choosePage, allData) {
   //先清空頁面資料
   addrBox.innerHTML = "";
   let offset = (choosePage - 1) * perPage;
   //分好頁的資料陣列
   let thisPageData = allData.slice(offset, offset + perPage);
-  thisPageData.forEach((data) => {
+  console.log(thisPageData);
+  for (let i = 0; i < thisPageData.length; i++) {
     //createElement 如果放在最外面，就會只有一個div可以用，所以要放在裡面
     let createBox = document.createElement("div"); //包含照片跟資訊
     let boxText = document.createElement("div"); //放資訊的div
-    let imgUrl = data[0]; //照片網址在元素陣列(data)中的index為0
+    let imgUrl = thisPageData[i][0]; //照片網址在元素陣列(thisPageData[i])中的index為0
     let createImg = document.createElement("img");
     createImg.src = imgUrl;
     //每一次新增的Box的css
     let boxContent =
       "border: 1px solid rgba(0, 0, 0, 0.1);padding: 20px 10px;display: flex;background: rgba(255, 255, 255, 0.432);justify-content: center;align-items: center;flex-direction: column;border-radius: 10px";
     createBox.style.cssText = boxContent;
-    boxText.innerHTML = `${
-      data[1]
-    }${"<br><br><i class='fas fa-clock'></i>&nbsp;&nbsp;"}${
-      data[3]
-    }${"<br><br><i class='fas fa-map-marker-alt'></i>&nbsp;&nbsp;"}${
-      data[2]
-    }${"<br><br><i class='fas fa-mobile-alt'></i>&nbsp;&nbsp;"}${data[4]}`;
+    boxText.innerHTML =
+      thisPageData[i][1] +
+      "<br><br><i class='fas fa-clock'></i>&nbsp;&nbsp;" +
+      thisPageData[i][3] +
+      "<br><br><i class='fas fa-map-marker-alt'></i>&nbsp;&nbsp;" +
+      thisPageData[i][2] +
+      "<br><br><i class='fas fa-mobile-alt'></i>&nbsp;&nbsp;" +
+      thisPageData[i][4];
     // 新增div
     createBox.appendChild(createImg);
     createBox.appendChild(boxText);
     addrBox.appendChild(createBox);
-  });
+  }
 }
 //計算總共頁數
 function getTotalPage(addressArr) {
@@ -238,9 +234,15 @@ function getTotalPage(addressArr) {
   // let pageItemContent = "<a href='#'>&laquo;</a>";
   let pageItemContent = "";
   for (let i = 0; i < totalPage; i++) {
-    pageItemContent += `<li class='pageItem' style='display: inline-block; '><a href='#${
-      i + 1
-    }' data-page='${i + 1}'>${i + 1}</a></li>`;
+    pageItemContent +=
+      "<li class='pageItem' style='display: inline-block;'><a href='#" +
+      (i + 1) +
+      "' data-page=" +
+      (i + 1) +
+      ">" +
+      (i + 1) +
+      "</a></li>";
+    // console.log(pageItemContent);
   }
   // pageItemContent += "<a href='#'>&raquo;</a>";
   pagination.style.cssText = pageItemStyle;
