@@ -84,12 +84,6 @@ request.send(null);
 function addrChange(selectedAddr) {
   //selectedText非空（已經選擇過地區）
   if (selectedText.innerText != " ") {
-    //檢查user是否選擇了相同的地區，防止一直問相同資料
-    // if (selectedText.innerText === addrArray[selectedAddr]) {
-    //   // alert(hotBtn1.innerText);
-    //   hotBtn1.style.cssText = "pointer-events: none;opacity: 0.4;";
-    // } else {
-    //清空原本filterAddr的內容
     filterAddr = [];
     //一轉換地區，就清空原本div內的Box
     addrBox.innerHTML = "";
@@ -197,7 +191,6 @@ function getPageData(choosePage, allData) {
   let offset = (choosePage - 1) * perPage;
   //分好頁的資料陣列
   let thisPageData = allData.slice(offset, offset + perPage);
-  console.log(thisPageData);
   for (let i = 0; i < thisPageData.length; i++) {
     //createElement 如果放在最外面，就會只有一個div可以用，所以要放在裡面
     let createBox = document.createElement("div"); //包含照片跟資訊
@@ -227,11 +220,9 @@ function getPageData(choosePage, allData) {
 function getTotalPage(addressArr) {
   //先清空原本頁碼
   pagination.innerHTML = "";
-  // debugger;
   let totalPage = Math.ceil(addressArr.length / perPage) || 1;
   let pageItemStyle =
     "margin: 30px;text-decoration: none;text-align: center; justify-content: center;align-items: center; width:300px;";
-  // let pageItemContent = "<a href='#'>&laquo;</a>";
   let pageItemContent = "";
   for (let i = 0; i < totalPage; i++) {
     pageItemContent +=
@@ -242,9 +233,7 @@ function getTotalPage(addressArr) {
       ">" +
       (i + 1) +
       "</a></li>";
-    // console.log(pageItemContent);
   }
-  // pageItemContent += "<a href='#'>&raquo;</a>";
   pagination.style.cssText = pageItemStyle;
   pagination.innerHTML = pageItemContent;
 }
