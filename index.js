@@ -59,14 +59,6 @@ request.onreadystatechange = function () {
           addrArray.push(addrName);
         }
       }
-      // 將不重複的地名陣列，利用forEach加入option
-      // addrArray.forEach((addr, index) => {
-      //   let option = document.createElement("option");
-      //   option.value = index;
-      //   option.innerHTML = addr;
-      //   g_selectAdd.appendChild(option);
-      // });
-      // 將不重複的地名陣列，利用forEach加入option ==> IE相容性
       for (let index = 0; index < addrArray.length; index++) {
         let option = document.createElement("option");
         option.value = index;
@@ -90,36 +82,41 @@ request.send(null);
 
 function changeSelectedOption(selectedAddr) {
   //selectedText非空（已經選擇過地區）
-  let selected = selectedAddr.innerText;
+  //暫時印出所有btn
+  //btn 總數
+  let allButton = hotBtn.getElementsByTagName("button");
+  let allhotBtnLength = allButton.length;
+  let allhotBtnArea = []; //所有熱門地區Btn(地名)之陣列
+  // hotBtn.getElementsByTagName("button")[0].dataset.value
+  for (let i = 0; i < allhotBtnLength; i++) {
+    allhotBtnArea.push(allButton[i].dataset.value);
+  }
+  filterAddr = [];
+  //一轉換地區，就清空原本div內的Box
+  g_addrBox.innerHTML = "";
+
+  if (typeof selectedAddr != "number") {
+    g_selectedAddrText = selectedAddr.options[selectedAddr.selectedIndex].text;
+  } else {
+    //修改目前選到地區的文字
+    g_selectedAddrText = addrArray[selectedAddr];
+    // //也要改變下拉式選單的選項
+    g_selectAdd.selectedIndex = selectedAddr + 1;
+  }
+  let selected = "";
   if (selectedText.innerText != " ") {
-    if (
-      selected != g_$hotBtn1.innerText ||
-      selected != g_$hotBtn2.innerText ||
-      selected != g_$hotBtn3.innerText ||
-      selected != g_$hotBtn4.innerText
-    ) {
-      //其他的按鈕要是disabled = false
-      //先把所有熱門地區Bt0n還原
-      g_$hotBtn1.style.cssText = "";
-      g_$hotBtn1.disabled = false;
-      g_$hotBtn2.style.cssText = "";
-      g_$hotBtn2.disabled = false;
-      g_$hotBtn3.style.cssText = "";
-      g_$hotBtn3.disabled = false;
-      g_$hotBtn4.style.cssText = "";
-      g_$hotBtn4.disabled = false;
-    }
-    filterAddr = [];
-    //一轉換地區，就清空原本div內的Box
-    g_addrBox.innerHTML = "";
-    if (typeof selectedAddr != "number") {
-      g_selectedAddrText =
-        selectedAddr.options[selectedAddr.selectedIndex].text;
+    if (typeof selectedAddr === "number") {
+      selected = addrArray[selectedAddr];
     } else {
-      //修改目前選到地區的文字
-      g_selectedAddrText = addrArray[selectedAddr];
-      // //也要改變下拉式選單的選項
-      g_selectAdd.selectedIndex = selectedAddr + 1;
+      selected = selectedAddr.innerText;
+    }
+    //如果選擇的地區，不是熱門地區（即按按鈕），則所有按鈕恢復原狀
+    for (let i = 0; i < allhotBtnArea.length; i++) {
+      if (selected != allhotBtnArea[i]) {
+        allButton[i].disabled = false;
+        allButton[i].classList.remove("disalbedBtn");
+        allButton[i].classList.add("hotBtn");
+      }
     }
 
     //改變目前選擇地區 p -> div | getElementsByClassName -> getElementById
@@ -196,7 +193,9 @@ hotBtn.addEventListener("click", function (e) {
         }
       }
       e.target.disabled = true;
-      e.target.style.cssText = btnStyle;
+      // e.target.style.cssText = btnStyle;
+      e.target.classList.remove("hotBtn");
+      e.target.classList.add("disalbedBtn");
     }
   }
 });
@@ -209,7 +208,8 @@ function getPageData(choosePage, allData) {
   //分好頁的資料陣列
   let thisPageData = allData.slice(offset, offset + g_perPage);
   for (let i = 0; i < thisPageData.length; i++) {
-    createAddressBox(i);
+    createAddressBox(offset);
+    offset++;
   }
 }
 //計算總共頁數
