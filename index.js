@@ -209,28 +209,7 @@ function getPageData(choosePage, allData) {
   //分好頁的資料陣列
   let thisPageData = allData.slice(offset, offset + g_perPage);
   for (let i = 0; i < thisPageData.length; i++) {
-    //createElement 如果放在最外面，就會只有一個div可以用，所以要放在裡面
-    let createBox = document.createElement("div"); //包含照片跟資訊
-    let boxText = document.createElement("div"); //放資訊的div
-    let imgUrl = thisPageData[i][0]; //照片網址在元素陣列(thisPageData[i])中的index為0
-    let createImg = document.createElement("img");
-    createImg.src = imgUrl;
-    //每一次新增的Box的css
-    let boxContent =
-      "border: 3px solid rgba(0, 0, 0, 0.5);padding: 20px 10px;display: flex;background: rgba(255, 255, 255, 0.432);justify-content: center;align-items: center;flex-direction: column;border-radius: 10px";
-    createBox.style.cssText = boxContent;
-    boxText.innerHTML =
-      thisPageData[i][1] +
-      "<br><br><i class='fas fa-clock'></i>&nbsp;&nbsp;" +
-      thisPageData[i][3] +
-      "<br><br><i class='fas fa-map-marker-alt'></i>&nbsp;&nbsp;" +
-      thisPageData[i][2] +
-      "<br><br><i class='fas fa-mobile-alt'></i>&nbsp;&nbsp;" +
-      thisPageData[i][4];
-    // 新增div
-    createBox.appendChild(createImg);
-    createBox.appendChild(boxText);
-    g_addrBox.appendChild(createBox);
+    createAddressBox(i);
   }
 }
 //計算總共頁數
