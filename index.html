@@ -16,10 +16,14 @@
   </head>
   <body>
     <div id="loader"></div>
-    <div style="display: none" id="myDiv" class="animate-bottom">
+    <div style="display: none" id="contentDiv" class="animate-bottom">
       <div class="header">
         <h2>高雄旅遊資訊</h2>
-        <select name="selectAdd" id="selectAdd" onchange="addrChange(this);">
+        <select
+          name="selectAdd"
+          id="selectAdd"
+          onchange="changeSelectedOption(this);"
+        >
           <option value="" selected disabled hidden>
             -- 請選擇一個行政區-
           </option>
@@ -27,17 +31,37 @@
       </div>
       <div class="hotArea">
         <h4>熱門行政區</h4>
-        <div class="btn">
-          <button class="hotBtn b1" data-value="苓雅區" data-num="0">
+        <div class="btn" id="btn">
+          <button
+            class="hotBtn b1"
+            id="hotBtn1"
+            data-value="苓雅區"
+            data-num="0"
+          >
             苓雅區
           </button>
-          <button class="hotBtn b2" data-value="三民區" data-num="1">
+          <button
+            class="hotBtn b2"
+            id="hotBtn2"
+            data-value="三民區"
+            data-num="1"
+          >
             三民區
           </button>
-          <button class="hotBtn b3" data-value="新興區" data-num="2">
+          <button
+            class="hotBtn b3"
+            id="hotBtn3"
+            data-value="新興區"
+            data-num="2"
+          >
             新興區
           </button>
-          <button class="hotBtn b4" data-value="鹽埕區" data-num="3">
+          <button
+            class="hotBtn b4"
+            id="hotBtn4"
+            data-value="鹽埕區"
+            data-num="3"
+          >
             鹽埕區
           </button>
         </div>
