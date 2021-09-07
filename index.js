@@ -95,55 +95,56 @@ function changeSelectedOption(selectedAddr) {
   filterAddr = [];
   //一轉換地區，就清空原本div內的Box
   g_addrBox.innerHTML = "";
-
   if (typeof selectedAddr != "number") {
     g_selectedAddrText = selectedAddr.options[selectedAddr.selectedIndex].text;
+    //如果下拉式選單。選到熱門地區，熱門地區Btn要變成disabled=true，才不會重複要資料
+    for (let i = 0; i < allhotBtnArea.length; i++) {
+      if (g_selectedAddrText === allhotBtnArea[i]) {
+        // debugger;
+        allButton[i].disabled = true;
+        allButton[i].classList.add("disalbedBtn");
+        allButton[i].classList.remove("hotBtn");
+      }
+    }
   } else {
     //修改目前選到地區的文字
     g_selectedAddrText = addrArray[selectedAddr];
     // //也要改變下拉式選單的選項
     g_selectAdd.selectedIndex = selectedAddr + 1;
   }
-  let selected = "";
-  if (selectedText.innerText != " ") {
-    if (typeof selectedAddr === "number") {
-      selected = addrArray[selectedAddr];
-    } else {
-      selected = selectedAddr.innerText;
+  //如果選擇的地區，不是熱門地區（即按按鈕），則所有按鈕恢復原狀
+  for (let i = 0; i < allhotBtnArea.length; i++) {
+    if (g_selectedAddrText != allhotBtnArea[i]) {
+      allButton[i].disabled = false;
+      allButton[i].classList.remove("disalbedBtn");
+      allButton[i].classList.add("hotBtn");
     }
-    //如果選擇的地區，不是熱門地區（即按按鈕），則所有按鈕恢復原狀
-    for (let i = 0; i < allhotBtnArea.length; i++) {
-      if (selected != allhotBtnArea[i]) {
-        allButton[i].disabled = false;
-        allButton[i].classList.remove("disalbedBtn");
-        allButton[i].classList.add("hotBtn");
-      }
-    }
-
-    //改變目前選擇地區 p -> div | getElementsByClassName -> getElementById
-    selectedText.innerHTML = g_selectedAddrText;
-    //self 用不到
-    addressArr.filter(function (element, index, self) {
-      //element[2]放的是地名
-      //includes IE not support... 改用indexOf
-      if (element[2].indexOf(g_selectedAddrText) != -1) {
-        filterAddr.push(element);
-      }
-    });
-    //新增已過濾完成的地區名Box (前6筆資料)
-    //如果原本地區的景點數量不到6筆
-    if (filterAddr.length < g_perPage) {
-      for (let i = 0; i < filterAddr.length; i++) {
-        createAddressBox(i);
-      }
-    } else {
-      for (let i = 0; i < g_perPage; i++) {
-        createAddressBox(i);
-      }
-    }
-    //處理分頁
-    getTotalPage(filterAddr);
   }
+
+  //改變目前選擇地區 p -> div | getElementsByClassName -> getElementById
+  selectedText.innerHTML = g_selectedAddrText;
+  //self 用不到
+  addressArr.filter(function (element, index, self) {
+    //element[2]放的是地名
+    //includes IE not support... 改用indexOf
+    if (element[2].indexOf(g_selectedAddrText) != -1) {
+      filterAddr.push(element);
+    }
+  });
+  //新增已過濾完成的地區名Box (前6筆資料)
+  //如果原本地區的景點數量不到6筆
+  if (filterAddr.length < g_perPage) {
+    for (let i = 0; i < filterAddr.length; i++) {
+      createAddressBox(i);
+    }
+  } else {
+    for (let i = 0; i < g_perPage; i++) {
+      createAddressBox(i);
+    }
+  }
+  //處理分頁
+  getTotalPage(filterAddr);
+  // }
 }
 //建立景點div
 function createAddressBox(index) {
@@ -218,8 +219,6 @@ function getTotalPage(addressArr) {
   //先清空原本頁碼
   g_pagination.innerHTML = "";
   let totalPage = Math.ceil(addressArr.length / g_perPage) || 1;
-  let pageItemStyle =
-    "margin: 30px;text-decoration: none;text-align: center; justify-content: center;align-items: center; width:300px;";
   let pageItemContent = "";
   for (let i = 0; i < totalPage; i++) {
     pageItemContent +=
@@ -231,6 +230,6 @@ function getTotalPage(addressArr) {
       (i + 1) +
       "</a></li>";
   }
-  g_pagination.style.cssText = pageItemStyle;
+  // g_pagination.style.cssText = pageItemStyle;
   g_pagination.innerHTML = pageItemContent;
 }
