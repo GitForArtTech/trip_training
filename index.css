@@ -5,6 +5,7 @@
 * {
   margin: 0;
   padding: 0;
+  scroll-behavior: smooth;
 }
 body {
   font-family: "jf";
@@ -216,6 +217,7 @@ h2 {
 a {
   text-decoration: none;
   margin: 10px;
+  color: #8a82cc;
 }
 @media (max-width: 1000px) {
   .hotArea {

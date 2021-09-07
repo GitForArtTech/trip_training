@@ -59,6 +59,7 @@ request.onreadystatechange = function () {
           addrArray.push(addrName);
         }
       }
+      console.log(addrArray);
       for (let index = 0; index < addrArray.length; index++) {
         let option = document.createElement("option");
         option.value = index;
