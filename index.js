@@ -59,7 +59,6 @@ request.onreadystatechange = function () {
           addrArray.push(addrName);
         }
       }
-      console.log(addrArray);
       for (let index = 0; index < addrArray.length; index++) {
         let option = document.createElement("option");
         option.value = index;
@@ -230,6 +229,5 @@ function getTotalPage(addressArr) {
       (i + 1) +
       "</a></li>";
   }
-  // g_pagination.style.cssText = pageItemStyle;
   g_pagination.innerHTML = pageItemContent;
 }
