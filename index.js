@@ -1,3 +1,6 @@
+/**
+ * 獲得HTML元素
+ */
 //Loader
 const g_loader = document.getElementById("loader");
 //整個網頁內容用div包起來
@@ -13,6 +16,9 @@ const hotBtn = document.getElementById("btn");
 const g_addrBox = document.getElementById("addrBox");
 //現在分頁
 let g_pagination = document.getElementById("pagination");
+/**
+ * global variable
+ */
 // 限制每頁最多6筆資料
 const g_perPage = 6;
 //所有景點的資料陣列（照片網址,地名,地點,營業時間,電話）
